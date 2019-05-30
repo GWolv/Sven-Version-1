@@ -5,10 +5,10 @@ and an admin password (the password is a constant set to "applesauce"). I also a
 displayed in the start of the program. 
 
 
-*The lines of code that each change uses:
+*The lines of code that each change uses:*
 
-Password: 14, 31, 83, 84, 86
+*Password: 14, 31, 83, 84, 86*
 
-clearScreen(): 58, 189
+*clearScreen(): 58, 189*
 
-Colors: 181*
+*Colors: 181*

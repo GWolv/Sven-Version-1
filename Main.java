@@ -150,7 +150,7 @@ class Main
         System.out.println("What would you like to purchase? ");
         customerSelection = keyboard.nextInt();
 
-        subtractQuantity(itemsForSale, customerSelection, 1);
+        subtractQuantity(customerSelection, 1);
 
 /*
         for (int i = 0; i < numItems; i++)
@@ -236,20 +236,18 @@ class Main
   // updates inventory quanities
   public static void addQuantity(InventoryList itemsForSale, String userMenuChoice, int quantity)
   {
-    ArrayList<String> temp = itemsForSale.getItems();
+    ArrayList<String> currentInventory = itemsForSale.getItems();
 
-    int indexPosition = temp.indexOf(userMenuChoice);
+    int indexPosition = currentInventory.indexOf(userMenuChoice);
 
-    amount[indexPosition] = amount[indexPosition] + 1;
+    amount[indexPosition] = amount[indexPosition] + quantity;
   }
   
-  public static void subtractQuantity(InventoryList itemsForSale, int userMenuChoice, int quantity)
+  public static void subtractQuantity(int userMenuChoice, int quantity)
   {
-    ArrayList<String> temp = itemsForSale.getItems();
-
     int indexPosition = userMenuChoice - 1;
 
-    amount[indexPosition] = amount[indexPosition] - 1;
+    amount[indexPosition] = amount[indexPosition] - quantity;
   }
 
   public static void displayMachine()

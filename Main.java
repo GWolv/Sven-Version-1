@@ -4,6 +4,7 @@ import java.util.Scanner;   // keyboard & file inputs & outputs
 import java.io.File;        // connecting to external files
 import java.io.IOException; // handle unexpected input/output runtime errors
 import java.io.FileWriter;  // writing data to external file
+import java.util.ArrayList;
 
 class Main 
 {
@@ -11,8 +12,7 @@ class Main
 
   static final String NAME = "Sven";    // name of program  
   static final int EXIT_CHOICE = 3;     // menu choice to exit program
-  static final String ADMIN_PASSWORD = "applesauce"; // Password for Admin Mode
-
+  
   // external data file containing list of items sold in vending machine   
   static final String INVENTORY_LIST_FILENAME = "ItemsForSale.txt";
 
@@ -25,11 +25,11 @@ class Main
 
     // to obtain human's input  
     Scanner keyboard = new Scanner(System.in);          
-  
+
     String userMenuChoice = "";   // human inputted menu choice
     String newItem = "";          // new item added to inventory
-    String password = " ";        // user inputted password
-
+    String PIN = "0000";
+    
     // customer selection from menu list of items
     int customerSelection = 0;    
 
@@ -53,77 +53,89 @@ class Main
     {
       System.err.println(inputOutputError); // directing system error to error log file
     }
-
-    ////////////////////// setting up the screen
-    clearScreen();                    // hides unneeded info at the top
-    System.out.println("\n\n");       // blank lines to space output
-
-    System.out.println("Hello, I am the world's first smart vending machine. My name is " + NAME + "!");
-
     
+    ////////////////////// setting up the screen
+    clearScreen();
+
     System.out.println("\n\n");       // blank lines to space output
+
+    System.out.println("\033[30m\033[42mHello, I am the world's first smart vending machine. My name is " + NAME + "!\033[0m");
+    
+    displayMachine();
+    
+    // derived from http://www.angelfire.com/co/cajhnesplace/ascii/vend.html
+    
+    System.out.println("\n");       // blank lines to space output
     
     ////////////////////// interact with customer
 
     // loop until human inputs the choice to exit the menu
-    // TODO - find a better way to convert an int (EXIT_CHOICE) to a String
     while (!userMenuChoice.equals(EXIT_CHOICE + ""))
     {
       displayMenu();
 
       System.out.print("Choice: ");
+
       // trim leading & trailing spaces
-      // TODO - allow user to input lowercase letters
       userMenuChoice = keyboard.nextLine().trim();  
 
       ////////////////////// Admin Mode
-      // TODO - create separate programs for customers and admins
-      if (userMenuChoice.equals("1") || userMenuChoice.equals("A") || userMenuChoice.equals("a"))
+
+      if (userMenuChoice.equals("1") || userMenuChoice.equals("A")  || userMenuChoice.equals("a"))
       {
-        System.out.println("Please enter the password: ");
-        password = keyboard.nextLine();
+        System.out.println("IN ADMIN MODE.....");
+        
 
-        if (password.equals(ADMIN_PASSWORD))
+        System.out.println("Please enter PIN: ");
+        PIN = keyboard.nextLine();
+
+        if (PIN.equals("0000"))
         {
+          System.out.println("Still in     [-]ADMIN MODE[-]");
+        }
+        else if (!(PIN.equals("0000")))
+        {
+          System.out.println("INCORRECT PASSWORD.");
+          System.exit(0);
+        }
 
-          System.out.println("IN ADMIN MODE.....");
+        System.out.print("What is the new item to add to the machine's inventory? ");
+        newItem = keyboard.nextLine();    // obtain user's input via keyboard
         
-          System.out.print("What is the new item to add to the machine's inventory? ");
-          newItem = keyboard.nextLine();    // obtain user's input via keyboard
+        addQuantity(itemsForSale, newItem, 1);
+
+        updateSuccess = false;
         
-          updateSuccess = false;
-        
-          if (!itemsForSale.addItem(newItem))
-          {
-            System.out.println("The update failed. Perhaps the item was already in the list.");    
-          }
-          else
-          {
+        if (!itemsForSale.addItem(newItem))
+        {
+          System.out.println("The update failed. Perhaps the item was already in the list.");    
+        }
+        else
+        {
           
-            try
-            { 
-              // add the new item to the end of the file
-              // connect to external file, true specifies append mode
-              FileWriter externalFile = new FileWriter(INVENTORY_LIST_FILENAME, true);  
-              externalFile.write("\n" + newItem); // new line first to preserve format of existing file
-              System.out.println(newItem);
-              externalFile.flush();                      
-              externalFile.close(); 
+          try
+          { 
+            // add the new item to the end of the file
+            // connect to external file, true specifies append mode
+            FileWriter externalFile = new FileWriter(INVENTORY_LIST_FILENAME, true);  
+            externalFile.write("\n" + newItem); // new line first to preserve format of existing file
+            System.out.println(newItem);
+            externalFile.flush();                      
+            externalFile.close(); 
 
-              updateSuccess = true;   
-              System.out.println("Your updated inventory list is: ");
-              itemsForSale.displayList();                                 
-            }                                                           
-            catch (IOException ioe) // if error occurs trying to write data to file
-            {
-              System.err.println(ioe);
-              System.out.println("The update failed due to an error working with an external data file.");
-            }
+            updateSuccess = true;   
+            System.out.println("Your updated inventory list is: ");
+            itemsForSale.displayList();                                 
+          }                                                           
+          catch (IOException ioe) // if error occurs trying to write data to file
+          {
+            System.err.println(ioe);
+            System.out.println("The update failed due to an error working with an external data file.");
+          }
 
-          } // end of else statement
-        } // end of password if statement
-      }  // end of Admin choice if statement
-      
+        }
+
+      }
       ////////////////////// Customer Mode
       else if (userMenuChoice.equals("2") || userMenuChoice.equals("C") || userMenuChoice.equals("c"))
       {
@@ -138,15 +150,22 @@ class Main
         System.out.println("What would you like to purchase? ");
         customerSelection = keyboard.nextInt();
 
+        subtractQuantity(itemsForSale, customerSelection, 1);
+
+/*
+        for (int i = 0; i < numItems; i++)
+        {
+          InventoryList nextItem: itemsForSale)
+        {
+          if (nextItem.equals(userInput))
+          {
+            itemsForSale.removeItem(nextItem);
+            break;
+          }
+        }
+*/
         System.out.println("DEBUGGING: the customer input is #" + customerSelection);
-        itemsForSale.removeItem("avocados");
-
-
-        // TODO save / write the current most upated list of items (one by one) 
-        // back to the external file
-        // close the file
-
-
+        
         try
         { 
           FileWriter externalFile = new FileWriter(INVENTORY_LIST_FILENAME, false);  
@@ -168,29 +187,110 @@ class Main
           System.err.println(ioe);
         }
 
-      } // end of customer choice if statement
+      }
+      else if (userMenuChoice.equals("3") || userMenuChoice.equals("E") || userMenuChoice.equals("e"))
+      {
+       System.out.println("Exit");
+       System.out.println("Goodbye! Have a nice day! SF");
+       break;
+      }
+      else if (userMenuChoice.equals("minich") || userMenuChoice.equals("Minich") |userMenuChoice.equals("MINICH"))
+      {
+        System.out.println("YOU HAVE ENTERED GAME MODE");
+        Hangman game = new Hangman();
+            game.play();
+      }
     } // end of while loop
 
-    System.out.println("Goodbye");
 
   } // end of main method
 
+  /////////////////////// variables
+
+  public static int[] amount =
+  {
+    1,
+    1,
+    0,
+    0,
+    0
+  };
+
   /////////////////////// static functions
 
-  // display menu
+  // displays menu
   public static void displayMenu()
   {  
-    System.out.println("\u001B[31m 1. (A)dmin Mode");
-    System.out.println("\u001B[34m 2. (C)ustomer Mode");
-    System.out.println("\u001B[35m " + EXIT_CHOICE + ". Exit");
-    System.out.print("\u001B[0m");
+    System.out.println("\033[43m1. (A)dmin Mode\033[0m");
+    System.out.println("\033[46m2. (C)ustomer Mode\033[0m");
+    System.out.println("\033[1;41m" + EXIT_CHOICE + ". (E)xit\033[0m\033[32m");
   }
 
-  // deletes everything in the output box
+  // deletes everything in console output
   public static void clearScreen() 
-   {  
+  {  
     System.out.print("\033[H\033[2J");  
     System.out.flush();  
-   }  
+  }  
+
+  // updates inventory quanities
+  public static void addQuantity(InventoryList itemsForSale, String userMenuChoice, int quantity)
+  {
+    ArrayList<String> temp = itemsForSale.getItems();
+
+    int indexPosition = temp.indexOf(userMenuChoice);
+
+    amount[indexPosition] = amount[indexPosition] + 1;
+  }
+  
+  public static void subtractQuantity(InventoryList itemsForSale, int userMenuChoice, int quantity)
+  {
+    ArrayList<String> temp = itemsForSale.getItems();
+
+    int indexPosition = userMenuChoice - 1;
+
+    amount[indexPosition] = amount[indexPosition] - 1;
+  }
+
+  public static void displayMachine()
+  {
+     System.out.println("  \033[34m  _____  __      __   ______   _   _           ");
+     System.out.println("  \033[34m / ____|  \\ \\    / /  |  ____| | \\ | |       ");
+     System.out.println(" \033[34m | (___     \\ \\  / /   | |__    |  \\| |       ");
+     System.out.println(" \033[34m \\___ \\      \\ \\/ /    |  __|   | . ` |      ");
+     System.out.println(" \033[34m  ____) |     \\  /     | |____  | |\\  |        ");
+     System.out.println(" \033[34m |_____/       \\/      |______| |_| \\_|        ");
+
+
+      System.out.println("\033[36m|____________________________________________|"); 
+      System.out.println("|####### \033[34mMinich's Sven Vending Machine\033[0m\033[36m ######|"); 
+      System.out.println("|#|===========================|##############|"); 
+      System.out.println("|#|  \033[34m=====\033[36m  \033[32m..--''`\033[36m\033[36\033[36m  \033[33m|~~``|\033[36m   |##|````````|##|"); 
+      System.out.println("|#|  \033[34m|  |\033[36m   \033[32m\\     |\033[36\033[36m  \033[32m\033[33m:    | \033[36m  |##| \033[32mHello, \033[36m|##|"); 
+      System.out.println("|#|  \033[34m|___|\033[36m   \033[32m/___ |\033[36m  \033[33m| ___|\033[36m   |##|\033[32mi'm Sven\033[36m|##|"); 
+      System.out.println("|#|  \033[30m/=__\\  ./.__\\   |/,__\\\033[36m   |##| \033[32mplease\033[36m |##|"); 
+      System.out.println("|#|  \033[30m\\__//   \\__//    \\__//\033[36m   |##| \033[32mchoose\033[36m |##|"); 
+      System.out.println("|#|===========================|##| \033[32man item\033[36m ##|"); 
+      System.out.println("|#|```````````````````````````|##############|"); 
+      System.out.println("|#| \033[31m=.._\033[36m      \033[35m+++\033[36m     \033[32m//////\033[36m  |##############|"); 
+      System.out.println("|#| \033[31m\\/  \\\033[36m     \033[35m| |\033[36m    \033[32m\\ \\   \\\033[36m  |#|`````````|##|"); 
+      System.out.println("|#|  \033[31m\\___\\\033[36m    \033[35m|_|\033[36m     \033[32m/___ /\033[36m  |#| \033[32m_______\033[36m |##|"); 
+      System.out.println("|#|  \033[30m/ __\\   /__ \\   // __\\\033[36m\033[36m   |#| \033[0m\033[43m|1|2|3|\033[0m\033[36m |##|"); 
+      System.out.println("|#|  \033[30m\\__//-  \\__//   -\\__//\033[36m   |#| \033[0m\033[43m|4|5|6|\033[0m\033[36m |##|"); 
+      System.out.println("|#|===========================|#| \033[0m\033[43m|7|8|9|\033[0m\033[36m |##|"); 
+      System.out.println("|#|```````````````````````````|#| ``````` |##|"); 
+      System.out.println("|#| ..--    \033[34m______\033[36m   \033[31m.--._.\033[36m   |#|[=======]|##|"); 
+      System.out.println("|#| \\   \\   \033[34m|    |\033[36m   \033[31m|    |\033[36m   |#|  _   _  |##|"); 
+      System.out.println("|#|  \\___\\  \033[34m: ___:\033[36m   \033[31m| ___|\033[36m   |#| \033[35m|||\033[36m \033[30m( )\033[36m |##|"); 
+      System.out.println("|#|  \033[30m/ __\\  |/ __\\   // __\\\033[36m   |#| \033[35m|||\033[36m  `  |##|"); 
+      System.out.println("|#|  \033[30m\\__//   \\__//  /_\\__//\033[36m   |#|  ~      |##|"); 
+      System.out.println("|#|===========================|#|_________|##|");     
+      System.out.println("|#|\033[30m```````````````````````````\033[36m|##############|");
+      System.out.println("|############################################|"); 
+      System.out.println("|#|||||||||||||||||||||||||||||####\033[30m```````\033[36m###|");     
+      System.out.println("|#||||||||||||\033[0m\033[43mPUSH\033[0m\033[36m|||||||||||||####\033[30m\\|||||/\033[36m###|");
+      System.out.println("|############################################|");   
+      System.out.println("|____________________________________________|\033[0m");
+  }
 
 } // end of Main class

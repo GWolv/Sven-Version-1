@@ -16,7 +16,7 @@ and inventory quantities (amounts of each item) even though these quantities are
 In my previous version, I had also added an admin password (the password is a constant set to "applesauce") and colors to the choices 
 displayed in the start of the program. These changes did not remain in the master program because other students made other variations of these two contributions. My outdated version can be found [here](https://repl.it/@KristinProudfoo/Java-Sven-version-1-Updated).
 
-*lines with the contributions:*
+*Lines with the contributions:*
 
 *Password: 15, 32, 84, 85, 87*
 

@@ -2,7 +2,7 @@
 
 For my contributions I added a __clearScreen() method__ and __Inventory Quantities__.
 
-The clearScreen() method deletes everything that is currently in the output box. The code for the method is this:
+The **clearScreen()** method deletes everything that is currently in the output box. The code for the method is this:
 
 ```
 public static void clearScreen() 

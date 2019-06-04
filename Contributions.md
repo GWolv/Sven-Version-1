@@ -12,7 +12,6 @@ public static void clearScreen()
 }  
 ```
 The \0 is the escape sequence, while the rest is the command to reset the output box. After the output has been deleted, the flush method gets used. This basically gets rid of all the bytes that are being temporarily stored in the memory. It just causees the program to execute a little faster, since the memory gets emptied.
-\n
 
 For my other contribution, I added inventory quantities. For this I had an array called **amount** that stored some hardwired numbers for the current items available.
 ```
@@ -25,7 +24,6 @@ public static int[] amount =
  0
 };
 ```
-
 
 I use this array in both methods to edit the quantity in the right index positions. The first method, which adds to the quantity, is displayed like this:
 ```

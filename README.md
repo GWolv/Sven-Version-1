@@ -10,7 +10,7 @@ and inventory quantities (amounts of each item) even though these quantities are
 
 *clearScreen(): 58, 230*
 
-*Inventory Quantities: 105, 153, 210, 237, 246
+*Inventory Quantities: 105, 153, 210, 237, 246*
 
 
 In my previous version, I had also added an admin password (the password is a constant set to "applesauce") and colors to the choices 

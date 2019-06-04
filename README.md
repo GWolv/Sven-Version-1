@@ -1,16 +1,23 @@
 # Sven Version 1
 
-**Sven Version 1** is a smart vending machine project. My most upgraded version can be found [here](https://repl.it/@KristinProudfoo/Java-Sven-version-1-Updated).
+**Sven Version 1** is a smart vending machine project. My most upgraded version can be found [here](https://repl.it/@KristinProudfoo/Sven-Version-1-Final).
 
 My current upgrade includes a clearScreen() method that gets rid of the extra info at the top of the output box 
-and an admin password (the password is a constant set to "applesauce"). I also added colors to the choices 
-displayed in the start of the program. 
+and inventory quantities (amounts of each item) even though these quantities are not set to be displayed anywhere yet. 
 
 
-*The lines of code that each change uses:*
+*Lines that have to do with the contributions:*
 
-*Password: 14, 31, 83, 84, 86*
+*clearScreen(): 58, 230*
 
-*clearScreen(): 58, 189*
+*Inventory Quantities: 105, 153, 210, 237, 246
 
-*Colors: 181*
+
+In my previous version, I had also added an admin password (the password is a constant set to "applesauce") and colors to the choices 
+displayed in the start of the program. These changes did not remain in the master program because other students made other variations of these two contributions. My outdated version can be found [here](https://repl.it/@KristinProudfoo/Java-Sven-version-1-Updated).
+
+*lines with the contributions:*
+
+*Password: 15, 32, 84, 85, 87*
+
+*Colors: 194*

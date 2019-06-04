@@ -65,6 +65,11 @@ public class InventoryList implements Listable
       return false;
     }
 
+    public ArrayList<String> getItems()
+    {
+      return items;
+    }
+
     // instance variables
 
     ArrayList<String> items; 
